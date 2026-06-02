@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}TrendyHub | Profile{% endblock %}
+
+{% block content %}
+<section class="grid grid-2">
+    <article class="panel reveal" style="--delay: 70ms;">
+        <div class="eyebrow">Account</div>
+        <h1>{{ profile_user.first_name|default:profile_user.username }}</h1>
+        <p>Your personal space for account details, recent activity, and quick access to the orders you care about most.</p>
+        <div class="stack-sm muted">
+            <div>Email: {{ profile_user.email }}</div>
+            <div>Membership: {% if profile_role == 'ADMIN' %}Store Manager{% else %}Member{% endif %}</div>
+            <div>Joined: {{ profile_created_at|date:"d M Y" }}</div>
+        </div>
+        <div class="split-callout">
+            <div>
+                <strong>Everything in one place</strong>
+                <p style="margin: 6px 0 0;">Open your order history, check recent activity, and move back into the catalog whenever you are ready.</p>
+            </div>
+            <a class="btn secondary" href="{% url 'orders' %}">View Orders</a>
+        </div>
+    </article>
+
+    <article class="panel reveal" style="--delay: 150ms;">
+        <div class="eyebrow">Shopping Snapshot</div>
+        <h2>See your activity at a glance.</h2>
+        <div class="stats-row" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <div class="stats-card">
+                <strong>{{ total_orders }}</strong>
+                <span>Orders placed</span>
+            </div>
+            <div class="stats-card">
+                <strong>{{ active_orders }}</strong>
+                <span>Currently active</span>
+            </div>
+            <div class="stats-card">
+                <strong>{{ delivered_orders }}</strong>
+                <span>Delivered orders</span>
+            </div>
+            <div class="stats-card">
+                <strong>Rs. {{ total_spent|floatformat:0 }}</strong>
+                <span>Total spent</span>
+            </div>
+        </div>
+        <div class="note-card" style="margin-top: 18px;">
+            {% if latest_order %}
+                <strong>Latest order</strong>
+                <p style="margin-bottom: 0;">Order #{{ latest_order.id }} was placed on {{ latest_order.created_at|date:"d M Y" }} and is currently {{ latest_order.status|lower }}.</p>
+            {% else %}
+                <strong>Your next find is waiting</strong>
+                <p style="margin-bottom: 0;">You have not placed an order yet. Explore the catalog to start building your collection.</p>
+            {% endif %}
+        </div>
+    </article>
+</section>
+{% endblock %}

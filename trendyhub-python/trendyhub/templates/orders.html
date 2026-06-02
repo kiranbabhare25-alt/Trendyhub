@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}TrendyHub | Orders{% endblock %}
+
+{% block content %}
+<section class="panel reveal" style="--delay: 80ms;">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">{% if is_admin %}Order Operations{% else %}Order History{% endif %}</div>
+            <h1>{% if is_admin %}Keep every order moving with confidence.{% else %}Everything you have ordered, all in one place.{% endif %}</h1>
+            <p style="max-width: 760px;">
+                {% if is_admin %}
+                    Review incoming purchases, update each stage, and keep the storefront running smoothly from processing through delivery.
+                {% else %}
+                    Track every purchase, revisit delivery details, and check the latest status whenever you come back.
+                {% endif %}
+            </p>
+        </div>
+        {% if is_admin %}
+            <a class="btn secondary" href="{% url 'admin_dashboard' %}">Open Store Studio</a>
+        {% else %}
+            <a class="btn secondary" href="{% url 'catalog' %}">Continue Shopping</a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="stats-row reveal" style="margin-top: 28px; --delay: 120ms;">
+    <div class="stats-card">
+        <strong>{{ summary.total }}</strong>
+        <span>{% if is_admin %}orders in view{% else %}orders placed{% endif %}</span>
+    </div>
+    <div class="stats-card">
+        <strong>{{ summary.active }}</strong>
+        <span>{% if is_admin %}currently active{% else %}still in progress{% endif %}</span>
+    </div>
+    <div class="stats-card">
+        <strong>{{ summary.delivered }}</strong>
+        <span>delivered successfully</span>
+    </div>
+    <div class="stats-card">
+        <strong>Rs. {{ summary.amount|floatformat:0 }}</strong>
+        <span>{% if is_admin %}gross revenue{% else %}total spent{% endif %}</span>
+    </div>
+</section>
+
+<section class="table-card reveal" style="margin-top: 28px; --delay: 160ms;">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">Live View</div>
+            <h2>{% if is_admin %}Recent customer activity{% else %}Your latest purchases{% endif %}</h2>
+        </div>
+    </div>
+    {% if orders %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>
+                            <strong>#{{ order.id }}</strong><br>
+                            <span>{{ order.created_at|date:"d M Y" }}</span><br>
+                            <span>{{ order.created_at|date:"h:i A" }}</span>
+                        </td>
+                        <td>{{ order.user.first_name|default:order.user.username }}</td>
+                        <td>
+                            {% for item in order.items.all %}
+                                {{ item.product.name }} x {{ item.quantity }}<br>
+                            {% endfor %}
+                            <span>{{ order.shipping_address }}</span>
+                        </td>
+                        <td>Rs. {{ order.total_amount|floatformat:0 }}</td>
+                        <td>{{ order.payment_method }}</td>
+                        <td>
+                            <span class="pill">{{ order.status }}</span>
+                            {% if is_admin %}
+                                <form method="post" action="{% url 'update_order_status' order.id %}" style="margin-top: 10px;">
+                                    {% csrf_token %}
+                                    <select name="status">
+                                        <option {% if order.status == "Processing" %}selected{% endif %}>Processing</option>
+                                        <option {% if order.status == "Packed" %}selected{% endif %}>Packed</option>
+                                        <option {% if order.status == "Shipped" %}selected{% endif %}>Shipped</option>
+                                        <option {% if order.status == "Delivered" %}selected{% endif %}>Delivered</option>
+                                    </select>
+                                    <button type="submit">Update</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty">
+            {% if is_admin %}
+                No orders have been placed yet.
+            {% else %}
+                You have not placed an order yet. Browse the catalog to get started.
+            {% endif %}
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

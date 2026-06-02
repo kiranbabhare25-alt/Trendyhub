@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}TrendyHub | Register{% endblock %}
+
+{% block content %}
+<section class="grid grid-2">
+    <article class="panel reveal" style="--delay: 70ms;">
+        <div class="eyebrow">Join The Store</div>
+        <h1>Create your TrendyHub account.</h1>
+        <p>
+            It only takes a minute to get started. After that, you can browse the catalog, place orders,
+            and keep your shopping activity organized in one place.
+        </p>
+        <div class="mini-grid" style="margin-top: 18px;">
+            <div class="note-card">
+                <strong>Simple checkout</strong>
+                <p style="margin-bottom: 0;">Place orders straight from the catalog as soon as you sign in.</p>
+            </div>
+            <div class="note-card">
+                <strong>Personal account</strong>
+                <p style="margin-bottom: 0;">See profile details, order updates, and recent activity anytime.</p>
+            </div>
+        </div>
+    </article>
+
+    <article class="panel reveal" style="--delay: 150ms;">
+        <h2>Register</h2>
+        <form method="post">
+            {% csrf_token %}
+            <label for="name">Full Name</label>
+            <input id="name" name="name" type="text" placeholder="Enter your name" required>
+
+            <label for="email">Email Address</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="Minimum 6 characters" required>
+
+            <button type="submit">Create Account</button>
+        </form>
+        <p>Already registered? <a href="{% url 'login' %}" style="color: var(--accent);">Sign in here</a></p>
+    </article>
+</section>
+{% endblock %}

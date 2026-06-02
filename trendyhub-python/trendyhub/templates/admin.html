@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}TrendyHub | Store Studio{% endblock %}
+
+{% block content %}
+<section class="stats-row">
+    <div class="stats-card tilt-card reveal" style="--delay: 70ms;">
+        <strong>{{ metrics.products }}</strong>
+        <span>Products live</span>
+    </div>
+    <div class="stats-card tilt-card reveal" style="--delay: 140ms;">
+        <strong>{{ metrics.orders }}</strong>
+        <span>Orders placed</span>
+    </div>
+    <div class="stats-card tilt-card reveal" style="--delay: 210ms;">
+        <strong>Rs. {{ metrics.revenue|floatformat:0 }}</strong>
+        <span>Revenue captured</span>
+    </div>
+    <div class="stats-card tilt-card reveal" style="--delay: 280ms;">
+        <strong>{{ metrics.customers }}</strong>
+        <span>Active members</span>
+    </div>
+</section>
+
+<section class="grid grid-2" style="margin-top: 28px;">
+    <article class="panel reveal" style="--delay: 110ms;">
+        <div class="eyebrow">Store Studio</div>
+        <h1>Add a new piece to the collection.</h1>
+        <p>Use this space to publish fresh arrivals, update the visual story of the catalog, and keep inventory ready for the next order.</p>
+        <form method="post" action="{% url 'add_product' %}">
+            {% csrf_token %}
+            <input name="name" placeholder="Product name" required>
+            <textarea name="description" placeholder="Describe the fit, feel, or styling story" required></textarea>
+            <input name="price" type="number" min="1" step="0.01" placeholder="Price" required>
+            <input name="stock" type="number" min="0" placeholder="Stock units" required>
+            <select name="category_id" required>
+                <option value="">Select category</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <input name="image_url" placeholder="Image URL">
+            <label><input type="checkbox" name="featured"> Highlight as featured</label>
+            <button type="submit">Publish Product</button>
+        </form>
+    </article>
+
+    <article class="table-card reveal" style="--delay: 190ms;">
+        <div class="eyebrow">Inventory Snapshot</div>
+        <h2>See what is live and what needs attention.</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.category.name }}</td>
+                        <td>Rs. {{ product.price|floatformat:0 }}</td>
+                        <td>
+                            {% if product.stock <= 5 %}
+                                <span class="pill">Low: {{ product.stock }}</span>
+                            {% else %}
+                                {{ product.stock }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </article>
+</section>
+
+{% if low_stock_products %}
+    <section class="reveal" style="margin-top: 28px; --delay: 220ms;">
+        <div class="section-head">
+            <div>
+                <div class="eyebrow">Needs Attention</div>
+                <h2>These items may need a restock soon.</h2>
+            </div>
+        </div>
+        <div class="category-grid">
+            {% for product in low_stock_products %}
+                <article class="category-card reveal" style="--delay: 90ms;">
+                    <div>
+                        <span class="pill">Low stock</span>
+                        <h3 style="margin-top: 18px;">{{ product.name }}</h3>
+                        <p>{{ product.category.name }} collection</p>
+                    </div>
+                    <div class="inline-actions">
+                        <span class="pill">Rs. {{ product.price|floatformat:0 }}</span>
+                        <span class="pill">{{ product.stock }} left</span>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
+{% endblock %}

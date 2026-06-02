@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}TrendyHub | Curated Style{% endblock %}
+
+{% block content %}
+<section class="hero-card reveal" style="--delay: 80ms;">
+    <div>
+        <div class="eyebrow">New Season Edit</div>
+        <h1 class="hero-title">A cleaner, sharper way to shop everyday style.</h1>
+        <p>
+            Discover polished essentials, standout layers, and easy accessories in a storefront built to make
+            browsing feel calm, quick, and confident from the first click to the final order update.
+        </p>
+        <div class="hero-kicker">
+            <span class="chip">Fresh arrivals</span>
+            <span class="chip">Simple checkout</span>
+            <span class="chip">Clear tracking</span>
+        </div>
+        <div class="nav-actions" style="margin-top: 22px;">
+            <a class="btn" href="{% url 'catalog' %}">Shop The Collection</a>
+            {% if logged_in_user %}
+                <a class="btn secondary" href="{% url 'orders' %}">View Orders</a>
+            {% else %}
+                <a class="btn secondary" href="{% url 'register' %}">Create Account</a>
+            {% endif %}
+        </div>
+        <div class="project-strip">
+            <div class="project-chip">
+                <strong>Shop Faster</strong>
+                <span>Search, filter, and order without friction.</span>
+            </div>
+            <div class="project-chip">
+                <strong>Stay Informed</strong>
+                <span>Follow each order from processing to delivery.</span>
+            </div>
+            <div class="project-chip">
+                <strong>Fresh Picks</strong>
+                <span>Browse featured pieces and latest arrivals.</span>
+            </div>
+            <div class="project-chip">
+                <strong>Easy Access</strong>
+                <span>Keep your profile and order history close by.</span>
+            </div>
+        </div>
+    </div>
+    <div class="hero-visual">
+        <div class="hero-badge">
+            <strong>Featured now</strong>
+            {% for product in featured_products %}
+                <div>{{ product.name }}</div>
+            {% empty %}
+                <div>Fresh seasonal arrivals</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="reveal" style="margin-top: 28px; --delay: 160ms;">
+        <div class="stats-row">
+            <div class="stats-card tilt-card reveal" style="--delay: 80ms;">
+                <strong>{{ stats.products }}</strong>
+                <span>pieces in the shop</span>
+            </div>
+            <div class="stats-card tilt-card reveal" style="--delay: 150ms;">
+                <strong>{{ stats.categories }}</strong>
+                <span>collections to explore</span>
+            </div>
+            <div class="stats-card tilt-card reveal" style="--delay: 220ms;">
+                <strong>{{ stats.customers }}</strong>
+                <span>members already shopping</span>
+            </div>
+            <div class="stats-card tilt-card reveal" style="--delay: 290ms;">
+                <strong>{{ stats.orders }}</strong>
+                <span>orders placed so far</span>
+            </div>
+        </div>
+</section>
+
+<section class="reveal" style="margin-top: 34px; --delay: 120ms;">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">Editors' Picks</div>
+            <h2>Featured pieces worth opening first.</h2>
+        </div>
+        <a class="btn secondary" href="{% url 'catalog' %}">View Full Catalog</a>
+    </div>
+    <div class="products-grid">
+        {% for product in featured_products %}
+            <article class="product-card reveal" style="--delay: 100ms;">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                <div class="product-copy">
+                    <span class="pill">{{ product.category.name }}</span>
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.description|truncatechars:96 }}</p>
+                    <div class="meta">
+                        <span class="price">Rs. {{ product.price|floatformat:0 }}</span>
+                        <span>{{ product.stock }} in stock</span>
+                    </div>
+                    <a class="btn secondary" href="{% url 'catalog' %}?q={{ product.name|urlencode }}">View Item</a>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="story-grid reveal" style="margin-top: 34px; --delay: 140ms;">
+    <article class="story-card reveal" style="--delay: 90ms;">
+        <div class="eyebrow">Why TrendyHub</div>
+        <h2>Designed to make style shopping feel more effortless.</h2>
+        <p>
+            Everything is arranged around a smoother shopping rhythm: discover what is new, narrow down the
+            right category, place an order quickly, and come back later to see exactly where it stands.
+        </p>
+        <div class="mini-grid" style="margin-top: 18px;">
+            <div class="note-card">
+                <strong>Curated storefront</strong>
+                <p style="margin-bottom: 0;">Collections and product highlights are easy to scan without feeling crowded.</p>
+            </div>
+            <div class="note-card">
+                <strong>Clear account flow</strong>
+                <p style="margin-bottom: 0;">Sign in, revisit orders, and move through checkout with less back-and-forth.</p>
+            </div>
+        </div>
+    </article>
+    <div class="story-visual reveal" style="--delay: 180ms;">
+        <div class="story-badge">
+            <strong>Style made simpler</strong>
+            <div class="muted">Browse confidently, order quickly, and follow every update in one place.</div>
+        </div>
+    </div>
+</section>
+
+<section class="reveal" style="margin-top: 34px; --delay: 160ms;">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">What You Can Do</div>
+            <h2>Everything you need for a smoother shopping flow.</h2>
+        </div>
+    </div>
+    <div class="steps-grid">
+        <article class="step-card tilt-card reveal" style="--delay: 80ms;">
+            <span class="step-number">1</span>
+            <h3>Create your account</h3>
+            <p>Start with a quick sign-up so your profile, orders, and activity stay organized.</p>
+        </article>
+        <article class="step-card tilt-card reveal" style="--delay: 160ms;">
+            <span class="step-number">2</span>
+            <h3>Browse and place orders</h3>
+            <p>Filter the catalog, check availability, choose quantity, and submit your order in a few steps.</p>
+        </article>
+        <article class="step-card tilt-card reveal" style="--delay: 240ms;">
+            <span class="step-number">3</span>
+            <h3>Follow each update</h3>
+            <p>Return anytime to see order progress, delivery details, and your full order history.</p>
+        </article>
+    </div>
+</section>
+
+<section class="reveal" style="margin-top: 34px; --delay: 170ms;">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">Shop By Category</div>
+            <h2>Start with the collection that matches your day.</h2>
+        </div>
+    </div>
+    <div class="category-grid">
+        {% for category in categories %}
+            <article class="category-card reveal" style="--delay: 90ms;">
+                <div>
+                    <span class="pill">{{ category.name }}</span>
+                    <h3 style="margin-top: 18px;">{{ category.name }} essentials</h3>
+                    <p>{{ category.description }}</p>
+                </div>
+                <div class="inline-actions">
+                    <a class="btn secondary" href="{% url 'catalog' %}?category={{ category.id }}">Browse {{ category.name }}</a>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="reveal" style="margin-top: 34px; --delay: 180ms;">
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">Just Arrived</div>
+            <h2>Fresh additions ready to be discovered.</h2>
+        </div>
+    </div>
+    <div class="products-grid four-up">
+        {% for product in latest_products %}
+            <article class="product-card reveal" style="--delay: 100ms;">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                <div class="product-copy">
+                    <span class="pill">{{ product.category.name }}</span>
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.description|truncatechars:90 }}</p>
+                    <div class="meta">
+                        <span class="price">Rs. {{ product.price|floatformat:0 }}</span>
+                        <span>{{ product.stock }} in stock</span>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="cta-band reveal" style="margin-top: 34px; --delay: 200ms;">
+    <div>
+        <div class="eyebrow">Ready To Explore</div>
+        <h2>Find your next favorite piece today.</h2>
+        <p>Move from discovery to checkout in a straightforward shopping flow designed to feel polished from start to finish.</p>
+    </div>
+    <div class="inline-actions">
+        <a class="btn" href="{% url 'catalog' %}">Open Catalog</a>
+        {% if logged_in_user %}
+            <a class="btn secondary" href="{% url 'profile' %}">Open Profile</a>
+        {% else %}
+            <a class="btn secondary" href="{% url 'register' %}">Create Account</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
